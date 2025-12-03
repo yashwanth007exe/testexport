@@ -1,0 +1,18 @@
+[
+  {
+    "_id": "691810cda7e087ccd988c48f",
+    "name": "employee context",
+    "description": "employee context",
+    "recStatus": "active",
+    "tables": [
+      {
+        "_id": "69180ff76f392b605f8ade4b",
+        "name": "departments"
+      },
+      {
+        "_id": "6918102ea7e087ccd988c36d",
+        "name": "employees"
+      }
+    ]
+  }
+]

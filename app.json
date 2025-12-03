@@ -1,0 +1,41 @@
+{
+  "type": "workflow",
+  "maskId": "nAtbpBDOC9",
+  "name": "Rotation Test",
+  "description": "Rotation Test",
+  "state": "enabled",
+  "accessType": "public",
+  "status": "draft",
+  "recStatus": "active",
+  "version": "0.1",
+  "resourceLimits": {
+    "tables": {
+      "threshold": 45,
+      "maximum": 50
+    },
+    "configurations": {
+      "maxTabs": 15,
+      "maxGroupsPerTab": 300,
+      "maxFieldsPerGroup": 30,
+      "maxBufferSize": 10
+    },
+    "workFlows": {
+      "threshold": 25,
+      "maximum": 30,
+      "maxNodes": 1000
+    },
+    "mongoDB": {
+      "maxCollections": 20,
+      "maxCollectionDocuments": 100000,
+      "maxDocumentSize": 1048576
+    },
+    "jobs": {
+      "maxJobsInOneExecution": 3
+    },
+    "nodes": {
+      "executionLimit": 50,
+      "executionLimitMax": 100
+    }
+  },
+  "dependentApps": []
+}

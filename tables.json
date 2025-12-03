@@ -1,0 +1,177 @@
+[
+  {
+    "name": "departments",
+    "description": "departments",
+    "columns": [
+      {
+        "name": "id",
+        "type": "UInt256",
+        "comment": ""
+      },
+      {
+        "name": "location",
+        "type": "Nullable(String)",
+        "comment": ""
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "comment": ""
+      }
+    ],
+    "primaryKey": "id",
+    "references": [],
+    "createDictionary": false,
+    "unencryptedColumns": []
+  },
+  {
+    "name": "employee_projects",
+    "description": "employee_projects",
+    "columns": [
+      {
+        "name": "employee_id",
+        "type": "UInt256",
+        "comment": ""
+      },
+      {
+        "name": "project_id",
+        "type": "UInt256",
+        "comment": ""
+      },
+      {
+        "name": "project_phase",
+        "type": "String",
+        "comment": ""
+      },
+      {
+        "name": "reporting_manager",
+        "type": "String",
+        "comment": ""
+      },
+      {
+        "name": "work_mode",
+        "type": "String",
+        "comment": ""
+      }
+    ],
+    "primaryKey": "employee_id, project_id",
+    "references": [
+      {
+        "ref_table": "employees",
+        "ref_column": "id",
+        "column": "employee_id",
+        "comment": ""
+      },
+      {
+        "ref_table": "projects",
+        "ref_column": "id",
+        "column": "project_id",
+        "comment": ""
+      }
+    ],
+    "createDictionary": false,
+    "unencryptedColumns": []
+  },
+  {
+    "name": "employees",
+    "description": "employees",
+    "columns": [
+      {
+        "name": "address",
+        "type": "Nullable(String)",
+        "comment": ""
+      },
+      {
+        "name": "age",
+        "type": "Int32",
+        "comment": ""
+      },
+      {
+        "name": "company",
+        "type": "String",
+        "comment": ""
+      },
+      {
+        "name": "createdAt",
+        "type": "DateTime64(3)",
+        "comment": ""
+      },
+      {
+        "name": "department_id",
+        "type": "UInt256",
+        "comment": ""
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "comment": ""
+      },
+      {
+        "name": "id",
+        "type": "UInt256",
+        "comment": ""
+      },
+      {
+        "name": "manager",
+        "type": "String",
+        "comment": ""
+      },
+      {
+        "name": "mobile_number",
+        "type": "Nullable(String)",
+        "comment": ""
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "comment": ""
+      },
+      {
+        "name": "role",
+        "type": "String",
+        "comment": ""
+      }
+    ],
+    "primaryKey": "id",
+    "references": [
+      {
+        "ref_table": "departments",
+        "ref_column": "id",
+        "column": "department_id",
+        "comment": ""
+      }
+    ],
+    "createDictionary": false,
+    "unencryptedColumns": []
+  },
+  {
+    "name": "projects",
+    "description": "projects",
+    "columns": [
+      {
+        "name": "description",
+        "type": "Nullable(String)",
+        "comment": ""
+      },
+      {
+        "name": "id",
+        "type": "UInt256",
+        "comment": ""
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "comment": ""
+      },
+      {
+        "name": "status",
+        "type": "String",
+        "comment": ""
+      }
+    ],
+    "primaryKey": "id",
+    "references": [],
+    "createDictionary": false,
+    "unencryptedColumns": []
+  }
+]

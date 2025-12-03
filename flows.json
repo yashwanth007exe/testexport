@@ -1,0 +1,882 @@
+[
+  {
+    "id": "282179c5d0c7cef6",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "subflow",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "info": "Handles Redis caching logic for API requests.",
+    "name": "Check Cache and Fetch Data",
+    "isPopulated": true,
+    "in": [
+      {
+        "x": 60,
+        "y": 120,
+        "wires": [
+          {
+            "id": "c2d93ed7b906bb8e"
+          }
+        ]
+      }
+    ],
+    "out": [
+      {
+        "x": 700,
+        "y": 140,
+        "wires": [
+          {
+            "id": "38c539c9ccea98b0",
+            "port": 0
+          },
+          {
+            "id": "46888f6b7e70380c",
+            "port": 0
+          }
+        ]
+      }
+    ],
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "38c539c9ccea98b0",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "switch",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "name": "Cache Hit?",
+    "wires": [
+      [],
+      [
+        "8acc93e06ccf098f"
+      ]
+    ],
+    "x": 450,
+    "y": 120,
+    "outputs": 2,
+    "rules": [
+      {
+        "t": "neq",
+        "v": "404",
+        "vt": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "property": "statusCode",
+    "isPopulated": true,
+    "propertyType": "msg",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "8acc93e06ccf098f",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "http request",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "paytoqs": "ignore",
+    "persist": false,
+    "proxy": "",
+    "senderr": false,
+    "insecureHTTPParser": false,
+    "authType": "",
+    "tls": "",
+    "name": "Fetch from API",
+    "wires": [
+      [
+        "46888f6b7e70380c"
+      ]
+    ],
+    "x": 240,
+    "y": 220,
+    "headers": [],
+    "method": "GET",
+    "url": "",
+    "isPopulated": true,
+    "ret": "obj",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "c2d93ed7b906bb8e",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "key-value-store",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "name": "Get from store",
+    "wires": [
+      [
+        "38c539c9ccea98b0"
+      ]
+    ],
+    "x": 240,
+    "y": 120,
+    "isPopulated": true,
+    "meta": {
+      "operation": "get",
+      "keyStoreKey": {
+        "keyType": "msg",
+        "value": "key"
+      },
+      "keyStoreValue": {
+        "keyType": "msg",
+        "value": null
+      },
+      "expiresAt": ""
+    },
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "46888f6b7e70380c",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "key-value-store",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "name": "Insert data into store",
+    "wires": [
+      []
+    ],
+    "x": 500,
+    "y": 220,
+    "isPopulated": true,
+    "meta": {
+      "operation": "create",
+      "keyStoreKey": {
+        "keyType": "msg",
+        "value": "key"
+      },
+      "keyStoreValue": {
+        "keyType": "msg",
+        "value": "payload"
+      },
+      "expiresAt": ""
+    },
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "3a04952fc8eefc58",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "subflow",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "info": "Subflow to handle HTTP requests with configurable conditional retry mechanism.\r\n\r\n### Environment Variables:\r\n- `maxRetries`: Maximum retry attempts (default: 3).\r\n- `retryDelay`: Delay between retries in milliseconds (default: 1000 ms).\r\n- `retryStatusCode`: HTTP status code to trigger retry (optional).\r\n- `retryPayloadCheck`: String to check in the response payload for retry (optional).\r\n\r\n### Input:\r\n- `msg.url`: The URL for the HTTP request.\r\n- `msg.method`: HTTP method (e.g., GET, POST).\r\n- `msg.payload`: Request payload (optional).\r\n\r\n### Output:\r\n- On success: Returns the HTTP response.\r\n- On failure: Returns an error with retry attempts and failure details.",
+    "env": [
+      {
+        "name": "maxRetries",
+        "type": "str",
+        "value": "4"
+      },
+      {
+        "name": "retryDelay",
+        "type": "str",
+        "value": "1000"
+      },
+      {
+        "name": "retryStatusCode",
+        "type": "str",
+        "value": ""
+      },
+      {
+        "name": "retryPayloadCheck",
+        "type": "str",
+        "value": ""
+      }
+    ],
+    "name": "Http Request with Conditional Retry",
+    "isPopulated": true,
+    "in": [
+      {
+        "x": 100,
+        "y": 60,
+        "wires": [
+          {
+            "id": "34b488a6fbb0ba15"
+          }
+        ]
+      }
+    ],
+    "out": [
+      {
+        "x": 1080,
+        "y": 40,
+        "wires": [
+          {
+            "id": "39f5838e965517d4",
+            "port": 0
+          }
+        ]
+      }
+    ],
+    "category": "",
+    "color": "#f79007",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "34b488a6fbb0ba15",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "function",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Initialize Retry Count",
+    "wires": [
+      [
+        "07124413ca799d23"
+      ]
+    ],
+    "x": 300,
+    "y": 60,
+    "func": "msg.retries = msg.retries || 0; // Initialize retry count\nreturn msg;",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "isPopulated": true,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "07124413ca799d23",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "http request",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "HTTP Request",
+    "wires": [
+      [
+        "39f5838e965517d4",
+        "836b350bf608e784"
+      ]
+    ],
+    "x": 660,
+    "y": 60,
+    "method": "use",
+    "url": "",
+    "isPopulated": true,
+    "ret": "txt",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "39f5838e965517d4",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "switch",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Response OK?",
+    "wires": [
+      [],
+      [
+        "fa3b2ddd8404f786"
+      ]
+    ],
+    "x": 920,
+    "y": 60,
+    "outputs": 2,
+    "rules": [
+      {
+        "t": "btwn",
+        "v": "200",
+        "vt": "num",
+        "v2": "299",
+        "v2t": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "property": "statusCode",
+    "isPopulated": true,
+    "propertyType": "msg",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "fa3b2ddd8404f786",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "function",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Conditional Retry Check",
+    "wires": [
+      [
+        "5276854be5f4e125"
+      ],
+      [
+        "b2712c77daac14ae"
+      ]
+    ],
+    "x": 470,
+    "y": 260,
+    "func": "const maxRetries = env.get(\"maxRetries\") || 3;\nconst retryDelay = env.get(\"retryDelay\") || 1000;\nconst retryStatusCode = env.get(\"retryStatusCode\"); // Optional\nconst retryPayloadCheck = env.get(\"retryPayloadCheck\"); // Optional\n\n// Check if retries are exhausted\nif (msg.retries >= maxRetries) {\n    node.status({ fill: \"red\", shape: \"ring\", text: \"Failed after max retries\" });\n    msg.error = `Failed after ${msg.retries} retries`;\n    return [null, msg];\n}\n\nlet retryConditionMet = false;\n\n// Check if statusCode matches retryStatusCode\nif (retryStatusCode && msg.statusCode == retryStatusCode) {\n    retryConditionMet = true;\n}\n// Check if payload contains retryPayloadCheck string\nif (retryPayloadCheck && typeof msg.payload === \"string\" && msg.payload.includes(retryPayloadCheck)) {\n    retryConditionMet = true;\n}\n\nif (retryConditionMet) {\n    msg.retries++;\n    msg.delay = retryDelay;\n    node.status({ fill: \"yellow\", shape: \"dot\", text: `Retry ${msg.retries}/${maxRetries}` });\n    return [msg, null];\n} else {\n    node.status({ fill: \"red\", shape: \"ring\", text: \"No retry condition met\" });\n    msg.error = \"No retry condition met\";\n    return [null, msg];\n}",
+    "outputs": 2,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "isPopulated": true,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "b2712c77daac14ae",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "debug",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Log Error",
+    "active": true,
+    "wires": [],
+    "x": 820,
+    "y": 340,
+    "isPopulated": true,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "836b350bf608e784",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "debug",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "debug 2",
+    "active": true,
+    "wires": [],
+    "x": 930,
+    "y": 200,
+    "isPopulated": true,
+    "complete": "false",
+    "console": false,
+    "statusType": "auto",
+    "statusVal": "",
+    "tosidebar": true,
+    "tostatus": false,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "66be8dceef67c9eb",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "debug",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "debug 3",
+    "active": true,
+    "wires": [],
+    "x": 700,
+    "y": 180,
+    "isPopulated": true,
+    "complete": "false",
+    "console": false,
+    "statusType": "auto",
+    "statusVal": "",
+    "tosidebar": true,
+    "tostatus": false,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "5276854be5f4e125",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "delay",
+    "appType": "analytics",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Delay Node",
+    "wires": [
+      [
+        "07124413ca799d23",
+        "66be8dceef67c9eb"
+      ]
+    ],
+    "x": 310,
+    "y": 100,
+    "outputs": 1,
+    "timeout": "5",
+    "isPopulated": true,
+    "recStatus": "active",
+    "randomFirst": "1",
+    "randomLast": "5",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "pauseType": "delay",
+    "timeoutUnits": "seconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "__v": 0
+  },
+  {
+    "id": "282179c5d0c7cef6",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "subflow",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "info": "Handles Redis caching logic for API requests.",
+    "name": "Check Cache and Fetch Data",
+    "isPopulated": true,
+    "in": [
+      {
+        "x": 60,
+        "y": 120,
+        "wires": [
+          {
+            "id": "c2d93ed7b906bb8e"
+          }
+        ]
+      }
+    ],
+    "out": [
+      {
+        "x": 700,
+        "y": 140,
+        "wires": [
+          {
+            "id": "38c539c9ccea98b0",
+            "port": 0
+          },
+          {
+            "id": "46888f6b7e70380c",
+            "port": 0
+          }
+        ]
+      }
+    ],
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "38c539c9ccea98b0",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "switch",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "name": "Cache Hit?",
+    "wires": [
+      [],
+      [
+        "8acc93e06ccf098f"
+      ]
+    ],
+    "x": 450,
+    "y": 120,
+    "outputs": 2,
+    "rules": [
+      {
+        "t": "neq",
+        "v": "404",
+        "vt": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "property": "statusCode",
+    "isPopulated": true,
+    "propertyType": "msg",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "8acc93e06ccf098f",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "http request",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "paytoqs": "ignore",
+    "persist": false,
+    "proxy": "",
+    "senderr": false,
+    "insecureHTTPParser": false,
+    "authType": "",
+    "tls": "",
+    "name": "Fetch from API",
+    "wires": [
+      [
+        "46888f6b7e70380c"
+      ]
+    ],
+    "x": 240,
+    "y": 220,
+    "headers": [],
+    "method": "GET",
+    "url": "",
+    "isPopulated": true,
+    "ret": "obj",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "c2d93ed7b906bb8e",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "key-value-store",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "name": "Get from store",
+    "wires": [
+      [
+        "38c539c9ccea98b0"
+      ]
+    ],
+    "x": 240,
+    "y": 120,
+    "isPopulated": true,
+    "meta": {
+      "operation": "get",
+      "keyStoreKey": {
+        "keyType": "msg",
+        "value": "key"
+      },
+      "keyStoreValue": {
+        "keyType": "msg",
+        "value": null
+      },
+      "expiresAt": ""
+    },
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "46888f6b7e70380c",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "key-value-store",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "282179c5d0c7cef6",
+    "name": "Insert data into store",
+    "wires": [
+      []
+    ],
+    "x": 500,
+    "y": 220,
+    "isPopulated": true,
+    "meta": {
+      "operation": "create",
+      "keyStoreKey": {
+        "keyType": "msg",
+        "value": "key"
+      },
+      "keyStoreValue": {
+        "keyType": "msg",
+        "value": "payload"
+      },
+      "expiresAt": ""
+    },
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "3a04952fc8eefc58",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "subflow",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "info": "Subflow to handle HTTP requests with configurable conditional retry mechanism.\r\n\r\n### Environment Variables:\r\n- `maxRetries`: Maximum retry attempts (default: 3).\r\n- `retryDelay`: Delay between retries in milliseconds (default: 1000 ms).\r\n- `retryStatusCode`: HTTP status code to trigger retry (optional).\r\n- `retryPayloadCheck`: String to check in the response payload for retry (optional).\r\n\r\n### Input:\r\n- `msg.url`: The URL for the HTTP request.\r\n- `msg.method`: HTTP method (e.g., GET, POST).\r\n- `msg.payload`: Request payload (optional).\r\n\r\n### Output:\r\n- On success: Returns the HTTP response.\r\n- On failure: Returns an error with retry attempts and failure details.",
+    "env": [
+      {
+        "name": "maxRetries",
+        "type": "str",
+        "value": "4"
+      },
+      {
+        "name": "retryDelay",
+        "type": "str",
+        "value": "1000"
+      },
+      {
+        "name": "retryStatusCode",
+        "type": "str",
+        "value": ""
+      },
+      {
+        "name": "retryPayloadCheck",
+        "type": "str",
+        "value": ""
+      }
+    ],
+    "name": "Http Request with Conditional Retry",
+    "isPopulated": true,
+    "in": [
+      {
+        "x": 100,
+        "y": 60,
+        "wires": [
+          {
+            "id": "34b488a6fbb0ba15"
+          }
+        ]
+      }
+    ],
+    "out": [
+      {
+        "x": 1080,
+        "y": 40,
+        "wires": [
+          {
+            "id": "39f5838e965517d4",
+            "port": 0
+          }
+        ]
+      }
+    ],
+    "category": "",
+    "color": "#f79007",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "34b488a6fbb0ba15",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "function",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Initialize Retry Count",
+    "wires": [
+      [
+        "07124413ca799d23"
+      ]
+    ],
+    "x": 300,
+    "y": 60,
+    "func": "msg.retries = msg.retries || 0; // Initialize retry count\nreturn msg;",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "isPopulated": true,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "07124413ca799d23",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "http request",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "HTTP Request",
+    "wires": [
+      [
+        "39f5838e965517d4",
+        "836b350bf608e784"
+      ]
+    ],
+    "x": 660,
+    "y": 60,
+    "method": "use",
+    "url": "",
+    "isPopulated": true,
+    "ret": "txt",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "39f5838e965517d4",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "switch",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Response OK?",
+    "wires": [
+      [],
+      [
+        "fa3b2ddd8404f786"
+      ]
+    ],
+    "x": 920,
+    "y": 60,
+    "outputs": 2,
+    "rules": [
+      {
+        "t": "btwn",
+        "v": "200",
+        "vt": "num",
+        "v2": "299",
+        "v2t": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "property": "statusCode",
+    "isPopulated": true,
+    "propertyType": "msg",
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "fa3b2ddd8404f786",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "function",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Conditional Retry Check",
+    "wires": [
+      [
+        "5276854be5f4e125"
+      ],
+      [
+        "b2712c77daac14ae"
+      ]
+    ],
+    "x": 470,
+    "y": 260,
+    "func": "const maxRetries = env.get(\"maxRetries\") || 3;\nconst retryDelay = env.get(\"retryDelay\") || 1000;\nconst retryStatusCode = env.get(\"retryStatusCode\"); // Optional\nconst retryPayloadCheck = env.get(\"retryPayloadCheck\"); // Optional\n\n// Check if retries are exhausted\nif (msg.retries >= maxRetries) {\n    node.status({ fill: \"red\", shape: \"ring\", text: \"Failed after max retries\" });\n    msg.error = `Failed after ${msg.retries} retries`;\n    return [null, msg];\n}\n\nlet retryConditionMet = false;\n\n// Check if statusCode matches retryStatusCode\nif (retryStatusCode && msg.statusCode == retryStatusCode) {\n    retryConditionMet = true;\n}\n// Check if payload contains retryPayloadCheck string\nif (retryPayloadCheck && typeof msg.payload === \"string\" && msg.payload.includes(retryPayloadCheck)) {\n    retryConditionMet = true;\n}\n\nif (retryConditionMet) {\n    msg.retries++;\n    msg.delay = retryDelay;\n    node.status({ fill: \"yellow\", shape: \"dot\", text: `Retry ${msg.retries}/${maxRetries}` });\n    return [msg, null];\n} else {\n    node.status({ fill: \"red\", shape: \"ring\", text: \"No retry condition met\" });\n    msg.error = \"No retry condition met\";\n    return [null, msg];\n}",
+    "outputs": 2,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "isPopulated": true,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "b2712c77daac14ae",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "debug",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Log Error",
+    "active": true,
+    "wires": [],
+    "x": 820,
+    "y": 340,
+    "isPopulated": true,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "836b350bf608e784",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "debug",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "debug 2",
+    "active": true,
+    "wires": [],
+    "x": 930,
+    "y": 200,
+    "isPopulated": true,
+    "complete": "false",
+    "console": false,
+    "statusType": "auto",
+    "statusVal": "",
+    "tosidebar": true,
+    "tostatus": false,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "66be8dceef67c9eb",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "debug",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "debug 3",
+    "active": true,
+    "wires": [],
+    "x": 700,
+    "y": 180,
+    "isPopulated": true,
+    "complete": "false",
+    "console": false,
+    "statusType": "auto",
+    "statusVal": "",
+    "tosidebar": true,
+    "tostatus": false,
+    "recStatus": "active",
+    "__v": 0
+  },
+  {
+    "id": "5276854be5f4e125",
+    "tenantConfigId": "6810f24ff7dfff583949e1dc",
+    "createdAt": 1763178318677,
+    "type": "delay",
+    "appType": "workflows",
+    "maskId": "nAtbpBDOC9",
+    "z": "3a04952fc8eefc58",
+    "name": "Delay Node",
+    "wires": [
+      [
+        "07124413ca799d23",
+        "66be8dceef67c9eb"
+      ]
+    ],
+    "x": 310,
+    "y": 100,
+    "outputs": 1,
+    "timeout": "5",
+    "isPopulated": true,
+    "recStatus": "active",
+    "randomFirst": "1",
+    "randomLast": "5",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "pauseType": "delay",
+    "timeoutUnits": "seconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "__v": 0
+  }
+]

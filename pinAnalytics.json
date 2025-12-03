@@ -1,0 +1,104 @@
+[
+  {
+    "_id": "691810fb6f392b605f8ae068",
+    "userQuery": "691810f26f392b605f8ae050",
+    "generatedDBQuery": "SELECT e.name AS employee_name, d.name AS department_name\nFROM employees AS e\nGLOBAL LEFT JOIN departments AS d ON e.department_id = d.id\nLIMIT 1000;",
+    "visualization": {
+      "title": "Employees and Departments List",
+      "type": "table",
+      "originalQuery": "SELECT e.name AS employee_name, d.name AS department_name\nFROM employees AS e\nGLOBAL LEFT JOIN departments AS d ON e.department_id = d.id\nLIMIT 1000;",
+      "appliedFilters": [],
+      "filterDefinitions": [
+        {
+          "displayName": "employee",
+          "key": "77bc14ca-0c34-46a5-a169-ff48d368dd8b",
+          "table": "employees",
+          "columnName": "name",
+          "inputType": "string"
+        }
+      ]
+    },
+    "dashboardId": "691810fba7e087ccd988c503",
+    "type": "table",
+    "tenantId": "6810f24ff7dfff583949e1dc",
+    "recStatus": "active",
+    "createdBy": "u-225ff041-abb4-571f-a622-6b4cd84654d5",
+    "appId": "69180fc7f91b8db1a9f06934",
+    "createdAt": 1763184891923,
+    "updatedAt": 1763184929625,
+    "updatedBy": "u-225ff041-abb4-571f-a622-6b4cd84654d5"
+  },
+  {
+    "_id": "691812936f392b605f8ae1ae",
+    "userQuery": "6918128da7e087ccd988c64b",
+    "generatedDBQuery": "SELECT COUNT(*) AS employee_count FROM employees;",
+    "visualization": {
+      "title": "Total Employee Count",
+      "type": "text",
+      "originalQuery": "SELECT COUNT(*) AS employee_count FROM employees;",
+      "appliedFilters": [],
+      "filterDefinitions": []
+    },
+    "dashboardId": "691810fba7e087ccd988c503",
+    "type": "text",
+    "tenantId": "6810f24ff7dfff583949e1dc",
+    "recStatus": "active",
+    "createdBy": "u-225ff041-abb4-571f-a622-6b4cd84654d5",
+    "appId": "69180fc7f91b8db1a9f06934",
+    "createdAt": 1763185299147
+  },
+  {
+    "_id": "69181296a7e087ccd988c663",
+    "userQuery": "69181269a7e087ccd988c621",
+    "generatedDBQuery": "SELECT role AS role_name, COUNT(*) AS count_per_role\nFROM employees\nGROUP BY role\nORDER BY count_per_role DESC\nLIMIT 1000;",
+    "visualization": {
+      "title": "Employee Distribution",
+      "type": "piechart",
+      "customizations": {
+        "fields": {
+          "labelField": "role_name",
+          "valueFields": [
+            "count_per_role"
+          ]
+        },
+        "data": {
+          "labels": [
+            "Rol",
+            "Role_4",
+            "Role_3",
+            "Role_1"
+          ],
+          "datasets": [
+            {
+              "data": [
+                "50",
+                "50",
+                "50",
+                "50"
+              ],
+              "backgroundColor": [
+                "#3b82f6",
+                "#ef4444",
+                "#10b981",
+                "#f59e0b"
+              ]
+            }
+          ]
+        },
+        "showHeader": true,
+        "widgetHeader": "",
+        "infoDescription": ""
+      },
+      "originalQuery": "SELECT role AS role_name, COUNT(*) AS count_per_role\nFROM employees\nGROUP BY role\nORDER BY count_per_role DESC\nLIMIT 1000;",
+      "appliedFilters": [],
+      "filterDefinitions": []
+    },
+    "dashboardId": "691810fba7e087ccd988c503",
+    "type": "piechart",
+    "tenantId": "6810f24ff7dfff583949e1dc",
+    "recStatus": "active",
+    "createdBy": "u-225ff041-abb4-571f-a622-6b4cd84654d5",
+    "appId": "69180fc7f91b8db1a9f06934",
+    "createdAt": 1763185302226
+  }
+]
